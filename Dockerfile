@@ -1,4 +1,4 @@
-FROM ubuntu:latest AS builder
+FROM ubuntu:18.04 AS builder
 
 WORKDIR /build
 ENV TZ=Asia/Shanghai
@@ -12,8 +12,6 @@ RUN apt-get update \
  && ./get-clang.sh \
  && ./build.sh
 
-ENV TZ=Asia/Shanghai
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 FROM ubuntu
 
