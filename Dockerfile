@@ -5,6 +5,9 @@ FROM ubuntu:latest AS builder
 
 WORKDIR /build
 
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 
 RUN apt-get update \
  && apt-get install -y git ninja-build python pkg-config libnss3-dev curl unzip ccache libtinfo5  \
