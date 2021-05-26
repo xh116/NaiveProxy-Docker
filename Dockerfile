@@ -10,7 +10,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 
 RUN apt-get update \
- && apt-get install -y git ninja-build python pkg-config libnss3-dev curl unzip ccache libtinfo5  \
+ && apt-get install -y git ninja-build python pkg-config libnss3-dev ccache libtinfo5  \
+    curl unzip \
  && git clone --depth 1 https://github.com/klzgrad/naiveproxy.git \
  && cd naiveproxy/src \
  && ./get-clang.sh \
