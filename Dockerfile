@@ -9,8 +9,8 @@ ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 
-RUN apt-get update \
- && apt-get install -y git ninja-build python pkg-config libnss3-dev ccache libtinfo5  \
+RUN apt update \
+ && apt install -y git ninja-build python pkg-config libnss3-dev ccache libnss3 \
     curl unzip \
  && git clone --depth 1 https://github.com/klzgrad/naiveproxy.git \
  && cd naiveproxy/src \
@@ -22,8 +22,8 @@ FROM ubuntu
 
 COPY --from=builder /build/naiveproxy/src/out/Release/naive /usr/local/bin/naive
 
-RUN apt-get update \
- && apt-get install -y libnss3 \
+RUN apt update \
+ && apt install -y libnss3 \
  && rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT [ "naive" ]
