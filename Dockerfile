@@ -3,6 +3,8 @@
 
 FROM ubuntu:latest AS builder
 
+ENV DEBIAN_FRONTEND noninteractive
+
 WORKDIR /build
 
 
