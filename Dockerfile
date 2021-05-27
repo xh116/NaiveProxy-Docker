@@ -2,13 +2,14 @@ FROM alpine:latest
 
 ENV NAIVEPROXY_VERSION=v90.0.4430.85-10
 
-RUN apk add --no-cache --virtual libgcc .build-deps \
+RUN apk add --no-cache --virtual .build-deps \
      curl binutils \
     && curl --fail --silent -L https://github.com/klzgrad/naiveproxy/releases/download/${NAIVEPROXY_VERSION}/naiveproxy-${NAIVEPROXY_VERSION}-openwrt-x86_64.tar.xz| \
       tar xJvf - -C / && mv naiveproxy-* naiveproxy  \
     && strip /naiveproxy/naive \
     && apk del .build-deps 
 
+RUN apk add --no-cache libgcc 
     
 ENTRYPOINT [ "naive" ] 
 CMD [ "config.json" ]
