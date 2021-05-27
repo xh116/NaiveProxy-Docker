@@ -10,6 +10,7 @@ RUN apk add --no-cache --virtual .build-deps \
     && mv /naiveproxy-${NAIVEPROXY_VERSION}-openwrt-x86_64/naive /usr/local/bin/naive \
     && rm -rf naiveproxy-${NAIVEPROXY_VERSION}-openwrt-x86_64.tar.xz \
     && apk del .build-deps
- 
+    
+RUN apk add --no-cache nss 
 ENTRYPOINT [ "naive" ] 
 CMD [ "config.json" ]
