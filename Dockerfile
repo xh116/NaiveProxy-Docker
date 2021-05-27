@@ -3,12 +3,11 @@
 
 FROM alpine:latest AS builder
 
-ENV DEBIAN_FRONTEND noninteractive
 
 WORKDIR /build
 
 
-RUN apt update \
+RUN apk update \
  && apk add -y git ninja-build python pkg-config llvm libgcc-7-dev ccache curl unzip \
  && git clone --depth 1 https://github.com/klzgrad/naiveproxy.git \
  && cd naiveproxy/src \
