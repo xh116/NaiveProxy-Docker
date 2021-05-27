@@ -7,10 +7,9 @@ RUN apk add --no-cache --virtual .build-deps \
     && curl --fail --silent -L https://github.com/klzgrad/naiveproxy/releases/download/${NAIVEPROXY_VERSION}/naiveproxy-${NAIVEPROXY_VERSION}-openwrt-x86_64.tar.xz| \
       tar xJvf - -C / \
     && strip /naiveproxy-${NAIVEPROXY_VERSION}-openwrt-x86_64/naive \
+    && apk del .build-deps
     && mv /naiveproxy-${NAIVEPROXY_VERSION}-openwrt-x86_64/naive /usr/local/bin/naive \
     && rm -rf naiveproxy-${NAIVEPROXY_VERSION}-openwrt-x86_64.tar.xz \
-    && apk del .build-deps
-    
-RUN apk add --no-cache nss 
+     
 ENTRYPOINT [ "naive" ] 
 CMD [ "config.json" ]
