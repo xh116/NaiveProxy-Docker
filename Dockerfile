@@ -1,24 +1,25 @@
 # Https://github.com/xh116 modified
 # thanks to https://github.com/klzgrad/naiveproxy
 
-FROM debian:latest 
 
-RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
-    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
-ENV LANG en_US.utf8 \
-    DEBIAN_FRONTEND noninteractive
+FROM alpine:latest
 
-WORKDIR /build
+ENV NAIVEPROXY_VERSION=v90.0.4430.85-10
 
-RUN apt-get update \
- && apt-get install -y git ninja-build python pkg-config llvm libgcc-7-dev ccache curl unzip \
- && git clone --depth 1 https://github.com/klzgrad/naiveproxy.git \
- && cd naiveproxy/src \
- && ./get-clang.sh \
- && ./build.sh
- 
+# install s6-overlay & naiveproxy
+RUN apk add --no-cache --virtual .build-deps \
+     curl binutils \
+  && curl --fail --silent -L https://github.com/just-containers/s6-overlay/releases/download/v2.2.0.3/s6-overlay-amd64.tar.gz | \
+    tar xzvf - -C / \
+  && curl --fail --silent -L https://github.com/klzgrad/naiveproxy/releases/download/${NAIVEPROXY_VERSION}/naiveproxy-${NAIVEPROXY_VERSION}-openwrt-x86_64.tar.xz | \
+    tar xJvf - -C / && mv naiveproxy-* naiveproxy \
+  && strip /naiveproxy/naive \
+  && apk del .build-deps
 
-COPY --from=builder /build/naiveproxy/src/out/Release/naive /usr/local/bin/naive
+# dependency of naiveproxy
+RUN apk add --no-cache nss
+
+COPY ./services /etc/services.d/
 
 ENTRYPOINT [ "naive" ]
 CMD [ "config.json" ]
