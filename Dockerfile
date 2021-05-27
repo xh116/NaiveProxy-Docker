@@ -1,21 +1,18 @@
 # Https://github.com/xh116 modified
 # thanks to https://github.com/klzgrad/naiveproxy
 
-FROM alpine:latest AS builder
-
+FROM debian:latest 
+ENV DEBIAN_FRONTEND noninteractive
 
 WORKDIR /build
 
-
-RUN apk update \
- && apk add -y git ninja-build python pkg-config llvm libgcc-7-dev ccache curl unzip \
+RUN apt update \
+ && apt install -y git ninja-build python pkg-config llvm libgcc-7-dev ccache curl unzip \
  && git clone --depth 1 https://github.com/klzgrad/naiveproxy.git \
  && cd naiveproxy/src \
  && ./get-clang.sh \
  && ./build.sh
  
- 
-FROM alpine 
 
 COPY --from=builder /build/naiveproxy/src/out/Release/naive /usr/local/bin/naive
 
