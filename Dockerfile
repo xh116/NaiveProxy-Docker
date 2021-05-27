@@ -2,12 +2,16 @@
 # thanks to https://github.com/klzgrad/naiveproxy
 
 FROM debian:latest 
-ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
+    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG en_US.utf8 \
+    DEBIAN_FRONTEND noninteractive
 
 WORKDIR /build
 
-RUN apt update \
- && apt install -y git ninja-build python pkg-config llvm libgcc-7-dev ccache curl unzip \
+RUN apt-get update \
+ && apt-get install -y git ninja-build python pkg-config llvm libgcc-7-dev ccache curl unzip \
  && git clone --depth 1 https://github.com/klzgrad/naiveproxy.git \
  && cd naiveproxy/src \
  && ./get-clang.sh \
