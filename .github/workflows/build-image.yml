@@ -42,4 +42,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: xh116/naiveproxy:latest,xh116/naiveproxy:91
+        tags: xh116/naiveproxy:latest,xh116/naiveproxy:92
