@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-ENV NAIVEPROXY_VERSION=v91.0.4472.77-1
+ENV NAIVEPROXY_VERSION=v92.0.4515.107-1
 
 RUN apk add --no-cache --virtual .build-deps \
      curl binutils \
