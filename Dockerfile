@@ -10,9 +10,15 @@ RUN apk add --no-cache --virtual .build-deps \
     && mv /naiveproxy/naive /usr/local/bin/naive \
     && apk del .build-deps
 
-RUN apk add --no-cache libstdc++ 
-
 COPY /entrypoint.sh /
+
+RUN apk add --no-cache \
+ ca-certificates  \
+ bash  \
+ iptables  \
+ libstdc++ \
+ rm -rf /var/cache/apk/* && \
+ chmod a+x /entrypoint.sh
     
 ENTRYPOINT [ "/entrypoint.sh" ] 
 CMD ["naive", "config.json" ]
