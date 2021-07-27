@@ -1,16 +1,20 @@
-FROM alpine:latest
+FROM ubuntu:latest AS builder
 
 ENV NAIVEPROXY_VERSION=v92.0.4515.107-1
 
-RUN apk add --no-cache --virtual .build-deps \
-     curl binutils \
-    && curl --fail --silent -L https://github.com/klzgrad/naiveproxy/releases/download/${NAIVEPROXY_VERSION}/naiveproxy-${NAIVEPROXY_VERSION}-openwrt-x86_64.tar.xz|  \
-      tar xJvf - -C / && mv naiveproxy-* naiveproxy  \
-    && strip /naiveproxy/naive  \
-    && mv /naiveproxy/naive /usr/local/bin/naive \
-    && apk del .build-deps
+RUN apt update && apt install git python ninja-build  pkg-config curl unzip ccache \
+    && git clone --depth 1 https://github.com/klzgrad/naiveproxy.git \
+    && cd naiveproxy/src \
+    && ./get-clang.sh \
+    && ./build.sh \
+    && tar -xf ./out/Release/naive/naiveproxy-v92.0.4515.107-1-openwrt-x86_64.tar.xz \
+    && mv naiveproxy-* naiveproxy  
+
+
+FROM alpine:latest 
 
 COPY /entrypoint.sh /
+COPY --from=builder /naiveproxy/src/naiveproxy/naive /usr/local/bin/
 
 RUN apk add --no-cache \
  ca-certificates  \
