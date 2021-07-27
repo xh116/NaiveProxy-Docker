@@ -2,7 +2,7 @@ FROM ubuntu:latest AS builder
 
 ENV NAIVEPROXY_VERSION=v92.0.4515.107-1
 
-RUN apt update && apt install git python ninja-build  pkg-config curl unzip ccache \
+RUN apt-get update && apt-get install git python ninja-build  pkg-config curl unzip ccache \
     && git clone --depth 1 https://github.com/klzgrad/naiveproxy.git \
     && cd naiveproxy/src \
     && ./get-clang.sh \
