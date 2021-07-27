@@ -2,19 +2,23 @@ FROM ubuntu:21.04 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+WORKDIR /NAIVE
+
 RUN apt-get update && apt-get -qq install git python ninja-build pkg-config curl unzip ccache libstdc++-10-dev binutils && apt remove libc6-i386 \
     && git clone --depth 1 https://github.com/klzgrad/naiveproxy.git \
     && cd naiveproxy/src \
     && export TARGET="$(EXTRA_FLAGS='target_cpu="x64" target_os="openwrt" use_allocator="none" use_allocator_shim=false' OPENWRT_FLAGS='arch=x86_64 release=19.07.7 gcc_ver=7.5.0 target=x86 subtarget=64')" \
-    && $TARGET ./get-clang.sh && ccache -s \
-    && $TARGET ./build.sh && ccache -s \
+    && $TARGET ./get-clang.sh && \
+    ccache -s \
+    && $TARGET ./build.sh && \ 
+    ccache -s \
     && strip /out/Release/naive
     #&& tar -xJvf $(find ./out/Release/ -name "*naiveproxy*openwrt-x86_64*") \
     
 FROM alpine:latest 
 
 #COPY /entrypoint.sh /
-COPY --from=builder /naiveproxy/src/out/Release/naive /usr/local/bin/
+COPY --from=builder /NAIVE/naiveproxy/src/out/Release/naive /usr/local/bin/
 
 RUN apk add --no-cache \
  ca-certificates  \
