@@ -2,15 +2,13 @@ FROM ubuntu:21.04 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get -qq install git python ninja-build pkg-config curl unzip ccache libstdc++-10-dev \
+RUN apt-get update && apt-get -qq install git python ninja-build pkg-config curl unzip ccache \
     && git clone --depth 1 https://github.com/klzgrad/naiveproxy.git \
     && cd naiveproxy/src \
     && ./get-clang.sh \
     && ./build.sh  
     #&& tar -xJvf $(find ./out/Release/ -name "*naiveproxy*openwrt-x86_64*") \
     
-
-
 FROM alpine:latest 
 
 COPY /entrypoint.sh /
