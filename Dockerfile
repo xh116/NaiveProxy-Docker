@@ -2,7 +2,7 @@ FROM ubuntu:latest AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get -qq install git python ninja-build pkg-config curl unzip ccache \
+RUN apt-get update && apt-get -qq install git python ninja-build pkg-config curl unzip ccache libstdc++ \
     && git clone --depth 1 https://github.com/klzgrad/naiveproxy.git \
     && cd naiveproxy/src \
     && ./get-clang.sh \
