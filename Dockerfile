@@ -1,7 +1,7 @@
 FROM ubuntu:latest AS builder
 
 
-RUN apt-get update && apt-get install git python ninja-build  pkg-config curl unzip ccache \
+RUN apt-get update && apt-get install -y git python ninja-build  pkg-config curl unzip ccache \
     && git clone --depth 1 https://github.com/klzgrad/naiveproxy.git \
     && cd naiveproxy/src \
     && ./get-clang.sh \
