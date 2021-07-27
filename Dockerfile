@@ -14,7 +14,7 @@ RUN apt-get update && apt-get -qq install git python ninja-build pkg-config curl
     ccache -s \
     && ls -la ./out/Release/ \
     && strip ./out/Release/naive \
-    && ls -la /NAIVE/naiveproxy/src/out/Release/naive \
+    && mv ./out/Release/naive . \
     && pwd
      
     #&& tar -xJvf $(find ./out/Release/ -name "*naiveproxy*openwrt-x86_64*") \
@@ -22,7 +22,7 @@ RUN apt-get update && apt-get -qq install git python ninja-build pkg-config curl
 FROM alpine:latest 
 
 #COPY /entrypoint.sh /
-COPY --from=builder /NAIVE/naiveproxy/src/out/Release/naive /usr/local/bin/
+COPY --from=builder /NAIVE/naiveproxy/src/naive /usr/local/bin/
 
 RUN apk add --no-cache \
  ca-certificates  \
