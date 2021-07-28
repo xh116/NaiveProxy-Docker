@@ -25,12 +25,7 @@ FROM alpine:latest
 #COPY /entrypoint.sh /
 COPY --from=builder /NAIVE/naiveproxy/src/naive /usr/local/bin/
 
-RUN apk add --no-cache \
- ca-certificates  \
- bash  \
- iptables  \
- nss \
- libstdc++ 
+RUN apk add --no-cache libstdc++ 
  #chmod a+x /entrypoint.sh
     
 #ENTRYPOINT [ "/entrypoint.sh" ] 
