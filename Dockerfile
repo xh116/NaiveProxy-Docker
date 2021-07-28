@@ -20,12 +20,12 @@ RUN apt-get update && apt-get -qq install git python ninja-build pkg-config curl
      
     #&& tar -xJvf $(find ./out/Release/ -name "*naiveproxy*openwrt-x86_64*") \
     
-FROM alpine:latest 
+FROM debian:stable-slim
 
 #COPY /entrypoint.sh /
 COPY --from=builder /NAIVE/naiveproxy/src/naive /usr/local/bin/
 
-RUN apk add --no-cache libstdc++ 
+
  #chmod a+x /entrypoint.sh
     
 #ENTRYPOINT [ "/entrypoint.sh" ] 
