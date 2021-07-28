@@ -1,32 +1,23 @@
-FROM ubuntu:21.04 AS builder
+FROM alpine:latest
 
-ENV DEBIAN_FRONTEND=noninteractive
+RUN apk add --no-cache --virtual .build-deps \
+     curl binutils \
+    && export VERSION=$(curl -s "https://api.github.com/repos/klzgrad/naiveproxy/releases/latest" | jq -r .tag_name)    
+    && curl --fail --silent -L https://github.com/klzgrad/naiveproxy/releases/download/${VERSION}/naiveproxy-${VERSION}-openwrt-x86_64.tar.xz|  \
+      tar xJvf - -C / && mv naiveproxy-* naiveproxy  \
+    && strip /naiveproxy/naive  \
+    && mv /naiveproxy/naive /usr/local/bin/naive \
+    && apk del .build-deps
 
-WORKDIR /NAIVE
+COPY /entrypoint.sh /
 
-RUN apt-get update && apt-get -qq install git python ninja-build pkg-config curl unzip ccache libstdc++-10-dev binutils && apt remove libc6-i386 \
-    && git clone --depth 1 https://github.com/klzgrad/naiveproxy.git \
-    && cd naiveproxy/src \
-    #&& export TARGET="$(EXTRA_FLAGS='target_cpu="x64" target_os="openwrt" use_allocator="none" use_allocator_shim=false' OPENWRT_FLAGS='arch=x86_64 release=19.07.7 gcc_ver=7.5.0 target=x86 subtarget=64')" \
-    && export TARGET="$(EXTRA_FLAGS='target_cpu="x64"')" \
-    && $TARGET ./get-clang.sh && \
-    ccache -s \
-    && $TARGET ./build.sh && \ 
-    ccache -s \
-    && ls -la ./out/Release/ \
-    && strip ./out/Release/naive \
-    && mv ./out/Release/naive . \
-    && ls
-     
-    #&& tar -xJvf $(find ./out/Release/ -name "*naiveproxy*openwrt-x86_64*") \
+RUN apk add --no-cache \
+ ca-certificates  \
+ bash  \
+ iptables  \
+ libstdc++ \
+ rm -rf /var/cache/apk/* && \
+ chmod a+x /entrypoint.sh
     
-FROM debian:stable-slim
-
-#COPY /entrypoint.sh /
-COPY --from=builder /NAIVE/naiveproxy/src/naive /usr/local/bin/
-
-RUN apt-get update && apt-get -y install libc6-dev
- #chmod a+x /entrypoint.sh
-    
-#ENTRYPOINT [ "/entrypoint.sh" ] 
+ENTRYPOINT [ "/entrypoint.sh" ] 
 CMD ["naive", "config.json" ]
