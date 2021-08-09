@@ -9,6 +9,8 @@ RUN apk add --no-cache --virtual .build-deps \
     && mv /naiveproxy/naive /usr/local/bin/naive \
     && apk del .build-deps
 
+RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
+
 COPY /entrypoint.sh /
 
 RUN apk add --no-cache \
